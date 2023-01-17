@@ -1,0 +1,259 @@
+package com.speno.xedm.gui.frontend.client;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.client.loader.RpcProxy;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoader;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
+import com.smartgwt.client.util.Offline;
+import com.smartgwt.client.util.SC;
+import com.speno.xedm.gui.common.client.Constants;
+import com.speno.xedm.gui.common.client.I18N;
+import com.speno.xedm.gui.common.client.Session;
+import com.speno.xedm.gui.common.client.serials.SInfo;
+import com.speno.xedm.gui.common.client.serials.SSession;
+import com.speno.xedm.gui.common.client.serials.SUser;
+import com.speno.xedm.gui.common.client.services.InfoService;
+import com.speno.xedm.gui.common.client.services.InfoServiceAsync;
+import com.speno.xedm.gui.common.client.services.SecurityService;
+import com.speno.xedm.gui.common.client.services.SecurityServiceAsync;
+import com.speno.xedm.gui.frontend.client.panels.LoginPanel;
+import com.speno.xedm.gui.frontend.client.panels.MainPanel;
+
+/**
+ * Entry point classes define <code>onModuleLoad()</code>.
+ */
+public class FrontEndEntry implements EntryPoint {
+	  interface SUserProperties extends PropertyAccess<SUser> {
+		    ValueProvider<SUser, String> userName();
+		  }
+	  
+	// True when the user alreafy entered the main screen
+	static boolean entered = false;
+
+	private static FrontEndEntry instance;
+
+	private LoginPanel loginPanel;
+	private MainPanel mainPanel;
+
+	protected InfoServiceAsync infoService = (InfoServiceAsync) GWT.create(InfoService.class);
+	protected SecurityServiceAsync securityService = (SecurityServiceAsync) GWT.create(SecurityService.class);
+
+	/**
+	 * @return singleton Main instance
+	 */
+	public static FrontEndEntry get() {
+		return instance;
+	}
+
+	@Override
+	public void onModuleLoad() {
+		if (RootPanel.get("loadingWrapper") == null)
+			return;
+
+		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void onUncaughtException(Throwable caught) {
+				System.err.print(caught.getStackTrace());
+			}
+
+		});
+
+		instance = this;
+		
+		Window.enableScrolling(false);
+		Window.setMargin("0px");
+
+		mainPanel = MainPanel.get();
+
+		// ================== TEST
+
+	    RpcProxy<PagingLoadConfig, PagingLoadResult<SUser>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<SUser>>() {
+	        @Override
+	        public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<SUser>> callback) {
+	        	securityService.getUsers(loadConfig, callback);
+	        }
+	      };
+	      
+	      SUserProperties props = GWT.create(SUserProperties.class);
+      ListStore<SUser> store = new ListStore<SUser>(new ModelKeyProvider<SUser>() {
+          @Override
+          public String getKey(SUser item) {
+            return "" + item.getId();
+          }
+        });
+
+      final PagingLoader<PagingLoadConfig, PagingLoadResult<SUser>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<SUser>>(proxy);
+	    loader.setRemoteSort(true);
+	    loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, SUser, PagingLoadResult<SUser>>(store));
+
+	    final PagingToolBar toolBar = new PagingToolBar(50);
+	    toolBar.getElement().getStyle().setProperty("borderBottom", "none");
+	    toolBar.bind(loader);
+
+	    ColumnConfig<SUser, String> usernameColumn = new ColumnConfig<SUser, String>(props.userName(), 150, "Username");
+
+	    List<ColumnConfig<SUser, ?>> l = new ArrayList<ColumnConfig<SUser, ?>>();
+	    l.add(usernameColumn);
+
+	    ColumnModel<SUser> cm = new ColumnModel<SUser>(l);
+
+	    Grid<SUser> grid = new Grid<SUser>(store, cm) {
+	      @Override
+	      protected void onAfterFirstAttach() {
+	        super.onAfterFirstAttach();
+	        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+	          @Override
+	          public void execute() {
+	            loader.load();
+	          }
+	        });
+	      }
+	    };
+//	    grid.setSelectionModel(sm);
+	    grid.getView().setForceFit(true);
+	    grid.setLoadMask(true);
+	    grid.setLoader(loader);
+
+	    RootPanel.get().add(grid);
+	    RootPanel.get().add(toolBar);
+
+//		securityService.getUsers(savedSid, new AsyncCallback<SSession>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				FrontEndEntry.this.showInitialLogin();
+//			}
+//
+//			@Override
+//			public void onSuccess(SSession session) {
+//				if (session == null || !session.isLoggedIn()) {
+//					System.out.println("show InitialLogin");
+//					FrontEndEntry.this.showInitialLogin();
+//				} else {
+//					MainPanel.get();
+//					System.out.println("onLoggedIn");
+//					loginPanel.onLoggedIn(session);
+//					
+//					// Remove the loading frame
+//					RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
+////					setUploadTrigger(FrontEndEntry.this);
+//				}
+//			}
+//		});
+		
+//		getInfoAndLogin();
+		
+
+	}
+	
+	// Switch to the login panel
+	public void showLogin() {
+		mainPanel.hide();
+		loginPanel.show();
+		entered = false;
+	}
+
+	// 초기 설정을 서버로 부터 획득하고 로그인창 표시
+	private void getInfoAndLogin(){
+
+		infoService.getInfo(I18N.getLocale(), new AsyncCallback<SInfo>() {
+//			@Override
+			public void onFailure(Throwable error) {
+				SC.warn(error.getMessage());
+			}
+
+//			@Override
+			public void onSuccess(final SInfo info) {
+				// Store the release information
+				Cookies.setCookie(Constants.COOKIE_VERSION, info.getRelease());
+
+//				Config.init(info);
+				I18N.init(info);
+
+//				WindowUtils.setTitle(info, null);
+
+//				Feature.init(info);
+				Session.get().setInfo(info);
+
+				String savedSid = null;
+				try {
+					savedSid = Offline.get(Constants.COOKIE_SID).toString();
+				} catch (Throwable t) {
+					
+				}
+
+				loginPanel = new LoginPanel(info);
+
+				if (savedSid == null || "".equals(savedSid)) {
+					FrontEndEntry.this.showInitialLogin();
+				} else {
+					securityService.login(savedSid, new AsyncCallback<SSession>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							FrontEndEntry.this.showInitialLogin();
+						}
+
+						@Override
+						public void onSuccess(SSession session) {
+							if (session == null || !session.isLoggedIn()) {
+								System.out.println("show InitialLogin");
+								FrontEndEntry.this.showInitialLogin();
+							} else {
+								MainPanel.get();
+								System.out.println("onLoggedIn");
+								loginPanel.onLoggedIn(session);
+								
+								// Remove the loading frame
+								RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
+//								setUploadTrigger(FrontEndEntry.this);
+							}
+						}
+					});
+				}
+			}
+		});
+	}
+
+	// Setup the initial visualization of the login panel
+	private void showInitialLogin() {
+		RootPanel.get().add(loginPanel);
+
+		// Remove the loading frame
+		RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper").getElement());
+//		setUploadTrigger(FrontEndEntry.this);
+
+		showLogin();
+	}
+
+	public void showMain() {
+		if (entered)
+			return;
+
+		mainPanel.show();
+		loginPanel.hide();
+		entered = true;
+	}
+
+}

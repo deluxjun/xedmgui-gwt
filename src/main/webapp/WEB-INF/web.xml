@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<description>XEDM Suite</description>
+	<display-name>XEDM</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/context.xml</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>CharsetFilter</filter-name>
+		<filter-class>com.speno.xedm.web.CharsetFilter</filter-class>
+		<init-param>
+			<param-name>requestEncoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>SessionFilter</filter-name>
+		<filter-class>com.speno.xedm.web.SessionFilter</filter-class>
+	</filter>
+	<!--  
+	<filter>
+	    <filter-name>XSS</filter-name>
+	    <filter-class>com.speno.xedm.web.CrossScriptingFilter</filter-class>
+	</filter>
+	-->
+	<!-- mappings -->
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>UrlRewriteFilter</filter-name> -->
+<!-- 		<url-pattern>/*</url-pattern> -->
+<!-- 		<dispatcher>REQUEST</dispatcher> -->
+<!-- 		<dispatcher>FORWARD</dispatcher> -->
+<!-- 	</filter-mapping> -->
+
+	<filter-mapping>
+		<filter-name>SessionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CharsetFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 
+	<filter-mapping>
+	    <filter-name>XSS</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 -->
+	
+	<!-- Application initializer -->
+	<listener>
+		<listener-class>com.speno.xedm.web.ApplicationInitializer</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- services -->
+	<servlet>
+		<servlet-name>InfoService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.InfoServiceImpl</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SecurityService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.SecurityServiceImpl</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DocumentService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.DocumentServiceImpl</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>FolderService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.FolderServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InfoService</servlet-name>
+		<url-pattern>/frontend/info</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SecurityService</servlet-name>
+		<url-pattern>/frontend/security</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DocumentService</servlet-name>
+		<url-pattern>/frontend/document</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FolderService</servlet-name>
+		<url-pattern>/frontend/folder</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DocumentCodeService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.DocumentCodeServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DocumentCodeService</servlet-name>
+		<url-pattern>/frontend/documentcode</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>MessageService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.MessageServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MessageService</servlet-name>
+		<url-pattern>/frontend/message</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Preview</servlet-name>
+		<servlet-class>com.speno.xedm.web.DocumentPreview</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Preview</servlet-name>
+		<url-pattern>/preview</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ECMPreview</servlet-name>
+		<servlet-class>com.speno.xedm.web.ECMPreview</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ECMPreview</servlet-name>
+		<url-pattern>/ecm-preview</url-pattern>
+	</servlet-mapping>
+
+<!--  sso.jsp 사용 -->
+<!-- 
+	<servlet>
+		<servlet-name>SSOLogin</servlet-name>
+		<servlet-class>com.speno.xedm.web.SSOServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SSOLogin</servlet-name>
+		<url-pattern>/sso</url-pattern>
+	</servlet-mapping>
+ -->
+	<servlet>
+		<servlet-name>Download</servlet-name>
+		<servlet-class>com.speno.xedm.web.DownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Download</servlet-name>
+		<url-pattern>/download</url-pattern>
+	</servlet-mapping>
+
+	<!-- 20131203, junsoo, permission check -->
+	<servlet>
+		<servlet-name>CheckPermission</servlet-name>
+		<servlet-class>com.speno.xedm.web.ext.PermissionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CheckPermission</servlet-name>
+		<url-pattern>/CheckPermission</url-pattern>
+	</servlet-mapping>
+
+	<!-- 20130828, junsoo, ticket download -->
+	<servlet>
+		<servlet-name>DownloadTicket</servlet-name>
+		<servlet-class>com.speno.xedm.web.DownloadTicketServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DownloadTicket</servlet-name>
+		<url-pattern>/download-ticket</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ECMService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.ECMServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ECMService</servlet-name>
+		<url-pattern>/frontend/ecm</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RewriteService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.RewriteServiceImpl</servlet-class>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>RewriteService</servlet-name>
+		<url-pattern>/frontend/rewrite</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SystemService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.SystemServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemService</servlet-name>
+		<url-pattern>/frontend/system</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SearchService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.SearchServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SearchService</servlet-name>
+		<url-pattern>/frontend/search</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>LifeCycleService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.LifeCycleServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LifeCycleService</servlet-name>
+		<url-pattern>/frontend/lifecycle</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>TemplateService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.TemplateServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TemplateService</servlet-name>
+		<url-pattern>/frontend/template</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DelegationService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.DelegationServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DelegationService</servlet-name>
+		<url-pattern>/frontend/delegation</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>FilterService</servlet-name>
+		<servlet-class>com.speno.xedm.web.service.FilterServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FilterService</servlet-name>
+		<url-pattern>/frontend/filter</url-pattern>
+	</servlet-mapping>
+	
+	<!-- data services -->
+<!-- 	<servlet> -->
+<!-- 		<servlet-name>UsersData</servlet-name> -->
+<!-- 		<servlet-class>com.speno.xedm.web.data.UsersDataController</servlet-class> -->
+<!-- 	</servlet> -->
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>UsersData</servlet-name> -->
+<!-- 		<url-pattern>/data/users.rpc</url-pattern> -->
+<!-- 	</servlet-mapping> -->
+
+<!--
+	<servlet>
+		<servlet-name>FoldersData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.FoldersDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FoldersData</servlet-name>
+		<url-pattern>/data/folders.xml</url-pattern>
+	</servlet-mapping>
+-->
+
+	<servlet>
+		<servlet-name>DocumentsData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.DocumentsDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DocumentsData</servlet-name>
+		<url-pattern>/data/documents.xml</url-pattern>
+	</servlet-mapping>
+
+<!--
+	<servlet>
+		<servlet-name>HistoryData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.HistoryDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HistoryData</servlet-name>
+		<url-pattern>/data/history.xml</url-pattern>
+	</servlet-mapping>
+-->
+
+	<servlet>
+		<servlet-name>RightsData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.RightsDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RightsData</servlet-name>
+		<url-pattern>/data/rights.xml</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>GroupsData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.GroupsDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GroupsData</servlet-name>
+		<url-pattern>/data/groups.xml</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DocumentCodeData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.DocumentCodeDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DocumentCodeData</servlet-name>
+		<url-pattern>/data/codes.xml</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>MessagesData</servlet-name>
+		<servlet-class>com.speno.xedm.web.data.MessagesDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MessagesData</servlet-name>
+		<url-pattern>/data/messages.xml</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>UploadServlet</servlet-name>
+		<servlet-class>com.speno.xedm.web.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>*.gupld</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DirectUploadServlet</servlet-name>
+		<servlet-class>com.speno.xedm.web.DirectUploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DirectUploadServlet</servlet-name>
+		<url-pattern>/upload-directly</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Log</servlet-name>
+		<servlet-class>com.speno.xedm.web.LogServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Log</servlet-name>
+		<url-pattern>/log</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- OpenCMIS -->
+<!-- 
+   <servlet>
+      <servlet-name>cmisws</servlet-name>
+      <servlet-class>org.apache.chemistry.opencmis.server.impl.webservices.CmisWebServicesServlet</servlet-class>
+      <load-on-startup>7</load-on-startup>
+   </servlet>
+ -->
+
+   <servlet>
+      <servlet-name>cmisatom</servlet-name>
+      <servlet-class>com.speno.xedm.opencmis.CmisServlet</servlet-class>
+      <init-param>
+         <param-name>callContextHandler</param-name>
+         <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+      </init-param>
+      <load-on-startup>8</load-on-startup>
+   </servlet>
+    <servlet-mapping>
+      <servlet-name>cmisatom</servlet-name>
+      <url-pattern>/service/cmisatom/*</url-pattern>
+	</servlet-mapping>
+	<listener>
+		<listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>org.apache.chemistry.opencmis.REPOSITORY_CONFIG_FILE</param-name>
+		<param-value>/cmis-repository.properties</param-value>
+	</context-param>
+
+   <servlet>
+      <servlet-name>cmisbrowser</servlet-name>
+      <servlet-class>com.speno.xedm.opencmis.CmisBrowserServlet</servlet-class>
+      <init-param>
+         <param-name>callContextHandler</param-name>
+         <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+      </init-param>
+      <load-on-startup>8</load-on-startup>
+   </servlet>
+   
+      <servlet>
+   	<description>
+   	</description>
+   	<display-name>BatchCheckServlet</display-name>
+   	<servlet-name>BatchCheckServlet</servlet-name>
+   	<servlet-class>com.speno.xedm.web.BatchCheckServlet</servlet-class>
+   </servlet>
+   
+   <servlet>
+   	<description>
+   	</description>
+   	<display-name>BatchDownloadServlet</display-name>
+   	<servlet-name>BatchDownloadServlet</servlet-name>
+   	<servlet-class>com.speno.xedm.web.BatchDownloadServlet</servlet-class>
+   </servlet>
+   <servlet>
+   	<description>
+   	</description>
+   	<display-name>CometServlet</display-name>
+   	<servlet-name>CometServlet</servlet-name>
+   	<servlet-class>com.speno.xedm.web.CometServlet</servlet-class>
+   </servlet>
+   <servlet>
+   	<description>
+   	</description>
+   	<display-name>Data_sender</display-name>
+   	<servlet-name>Data_sender</servlet-name>
+   	<servlet-class>com.speno.xedm.web.Data_sender</servlet-class>
+   </servlet>
+
+<!-- 
+   <servlet>
+      <servlet-name>cmisbrowser</servlet-name>
+      <servlet-class>org.apache.chemistry.opencmis.server.impl.browser.CmisBrowserBindingServlet</servlet-class>
+      <init-param>
+         <param-name>callContextHandler</param-name>
+         <param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+      </init-param>
+      <load-on-startup>8</load-on-startup>
+   </servlet>
+ -->
+<!-- 
+   <servlet>
+      <servlet-name>cmistck</servlet-name>
+      <servlet-class>org.apache.chemistry.opencmis.tck.runner.WebRunnerServlet</servlet-class>
+      <load-on-startup>8</load-on-startup>
+   </servlet>
+ -->
+ 
+
+   
+<!-- 
+   <servlet-mapping>
+      <servlet-name>cmisws</servlet-name>
+      <url-pattern>/service/cmisws/*</url-pattern>
+   </servlet-mapping>
+ -->
+   <servlet-mapping>
+      <servlet-name>cmisbrowser</servlet-name>
+      <url-pattern>/service/cmisbrowser/*</url-pattern>
+   </servlet-mapping>
+   
+      <servlet-mapping>
+   	<servlet-name>BatchCheckServlet</servlet-name>
+   	<url-pattern>/BatchCheckServlet</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+   	<servlet-name>BatchDownloadServlet</servlet-name>
+   	<url-pattern>/BatchDownloadServlet</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+   	<servlet-name>CometServlet</servlet-name>
+   	<url-pattern>/CometServlet</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>Data_sender</servlet-name>
+   	<url-pattern>/Data_sender</url-pattern>
+   </servlet-mapping>
+
+   <!-- The CMIS TCK is deactivated by default. -->
+   <!-- CMISTCK
+   <servlet-mapping>
+      <servlet-name>cmistck</servlet-name>
+      <url-pattern>/cmistck</url-pattern>
+   </servlet-mapping>
+   CMISTCK -->
+
+
+	<!-- Welcome files -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>frontend.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- Human readable errors -->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.jsp</location>
+	</error-page>
+	
+	<!-- 
+	  * 프론트 컨트롤러 서블릿 등록
+	  * 웹 클라이언트 요청의 단일 진입점 역할과 서블릿 웹애플리케이션컨텍스트 생성
+	  * 서블릿 웹애플리케이션컨텍스트에 웹 환경과 관련 있는 모든 빈 등록 
+	  * 디폴트 설정파일 : /WEB-INF/dispatcher-servlet.xml
+	-->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+ 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>ScanServlet</display-name>
+		<servlet-name>ScanServlet</servlet-name>
+		<servlet-class>com.speno.xedm.web.ScanServlet</servlet-class>
+	</servlet>
+ 	
+	<servlet-mapping>
+ 		<servlet-name>dispatcher</servlet-name>
+ 		<url-pattern>/json/*</url-pattern>
+ 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ScanServlet</servlet-name>
+		<url-pattern>/ScanServlet</url-pattern>
+	</servlet-mapping>
+	
+ 	<!-- JSessionId timeout -->
+ 	<!-- 
+ 	<session-config>
+   <session-timeout>10</session-timeout>
+	</session-config> 
+ 	 -->
+</web-app>

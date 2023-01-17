@@ -1,0 +1,241 @@
+package com.speno.xedm.gui.server;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.speno.xedm.gui.common.client.GeneralException;
+import com.speno.xedm.gui.common.client.serials.SGroup;
+import com.speno.xedm.gui.common.client.serials.SInfo;
+import com.speno.xedm.gui.common.client.serials.SSecurityProfile;
+import com.speno.xedm.gui.common.client.serials.SSession;
+import com.speno.xedm.gui.common.client.serials.SUser;
+import com.speno.xedm.gui.common.client.services.SecurityService;
+import com.speno.xedm.gui.common.client.util.PagingConfig;
+import com.speno.xedm.gui.common.client.util.PagingResult;
+
+/**
+ * DAO พ๘ดย mock
+ * 
+ * @author deluxjun
+ *
+ */
+public class MockSecurityServiceImpl extends RemoteServiceServlet implements SecurityService {
+
+	private static final long serialVersionUID = 1L;
+
+//	@Override
+	public SSession login(String username, String password, String locale) {
+		if (StringUtils.isEmpty(locale))
+			locale = "en";
+
+		SSession session = new SSession();
+		SInfo info = new MockInfoServiceImpl().getInfo(locale);
+		session.setInfo(info);
+
+		session.setLoggedIn(false);
+		if ("admin".equals(username)) {
+			SUser user = new SUser();
+			user.setLanguage(locale);
+			session.setUser(user);
+			user.setUserName(username);
+			session.setSid("sid" + new Date().getTime());
+
+			SGroup group = new SGroup();
+			group.setId(1);
+			group.setName("admin");
+			group.setDescription("Administrators");
+			user.setGroups(new SGroup[] { group });
+			user.setName("Bae");
+			user.setEmail("jsbae@speno.co.kr");
+			user.setExpired(false);
+			user.setPasswordMinLenght(8);
+			user.setLockedDocs(5);
+			user.setCheckedOutDocs(1);
+			session.setLoggedIn(true);
+
+			Long[] menues = new Long[1000];
+			for (int i = 0; i < 1000; i++) {
+				menues[i] = (long) i - 100;
+			}
+
+			return session;
+		} else if ("author".equals(username)) {
+			SUser user = new SUser();
+			user.setId(100);
+			user.setExpired(true);
+			user.setPasswordMinLenght(8);
+			user.setLanguage(locale);
+			session.setUser(user);
+			session.setLoggedIn(false);
+			return session;
+		} else {
+			session.setLoggedIn(false);
+			return session;
+		}
+	}
+
+//	@Override
+	public SSession login(String sid) {
+		return login("admin", null, null);
+	}
+
+//	@Override
+	public void logout(String sid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void kill(String sid) throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int changePassword(long userId, String oldPassword,
+			String newPassword) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void deleteUser(String sid, long userId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SUser saveUser(String sid, SUser user)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SUser getUser(String sid, long userId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SGroup getGroup(String sid, long groupId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SGroup saveGroup(String sid, SGroup group)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteGroup(String sid, long groupId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeFromGroup(String sid, long groupId, long[] userIds)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addUserToGroup(String sid, long groupId, long userId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetPassword(String username, String emailAddress,
+			String productName) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SUser[] searchUsers(String sid, String username, long groupId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SSecurityProfile getSecurityProfile(String sid, long profileId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SSecurityProfile saveSecurityProfile(String sid,
+			SSecurityProfile profile) throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteSecurityProfile(String sid, long profileId)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applySecurityProfileRights(String sid, SSecurityProfile profile)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+// ==================================================
+// paging
+
+	@Override
+	public PagingResult<SUser> pagingUsers(String username, PagingConfig config) {
+		int totalLength = config.getTotalLength();
+		
+		System.out.println("start=" + config.getOffset() + ", max=" + config.getLimit() + ", total=" + config.getTotalLength());
+
+		if (totalLength < 1)
+			totalLength = 200;
+		ArrayList<SUser> sublist = new ArrayList<SUser>();
+		for (int i = 0; i < config.getLimit(); i++) {
+			SUser user = new SUser();
+			int index = i + config.getOffset();
+		      user.setUserName("deluxjun" + index);
+		      user.setName("deluxjun" + index);		  
+			sublist.add(user);
+		}
+		
+		System.out.println("start=" + config.getOffset() + ", max=" + sublist.size() + ", total=" + totalLength);
+		
+		return new PagingResult<SUser>(sublist, totalLength, config.getOffset());
+	}
+
+	@Override
+	public PagingResult<SUser> pagingUsersInGroupId(String sid,
+			String username, long groupId, PagingConfig config) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SUser saveUserProfile(String sid, SUser user)
+			throws GeneralException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

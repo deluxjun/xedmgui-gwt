@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/isc-jakarta-oro-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/isomorphic_core_rpc.jar"/>
+	<classpathentry kind="lib" path="lib/org.moxieapps.gwt.uploader-1.1.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-visualization-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/crypto-gwt/crypto-gwt-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/crypto-gwt/gwt-async-future-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/gwtupload-1.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/xedmcore"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

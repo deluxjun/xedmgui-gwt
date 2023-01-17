@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xedmsuite-gwt" basedir="." default="gwt-compile">
+ 
+    <property name="gwt.module.name" value="com.speno.xedm.gui.frontend.Frontend"/>
+    <property name="jar.name" value="gwt1.jar"/>
+    <property name="war.name" value="gwt1.war"/>
+    <property name="src.dir" location="src"/>
+    <property name="server.resources.dir" location="war/${server.resources.name}"/>
+    <property name="build.dir" location="build"/>
+    <property name="dist.dir" location="dist"/>  
+    <property name="classes.dir" location="war/WEB-INF/classes"/>
+    <property name="lib.dir" location="war/WEB-INF/lib"/>
+    <property name="gwt.client.dir" location="com/speno/xedm/gui/frontend/client"/>
+     
+    <import file="gwt.compile.ant.xml" />
+     
+    <path id="project.classpath">      
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+		<fileset dir="${classes.dir}">
+<!--			<include name="**/*.class" /> -->
+		</fileset>
+    </path> 
+<!-- 
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target> 
+-->
+	
+    <!-- Compile the java source code using javac
+    <target name="compile" depends="prepare">      
+        <javac srcdir="${src.dir}" destdir="${build.dir}">
+            <classpath refid="project.classpath"/>
+        </javac>      
+    </target>      -->
+    <!-- Invoke the GWT compiler to create the Javascript for us -->
+	<target name="gwt-compile" depends="">
+		<gwt.compile module="${gwt.module.name}" />
+	</target>
+	
+    <!-- Package the compiled Java source into a JAR file 
+    <target name="jar" depends="compile">      
+        <jar jarfile="${lib.dir}/${jar.name}" basedir="${build.dir}/">
+            <exclude name="${gwt.client.dir}/**/*.class"/>
+        </jar>  
+    </target>
+	-->
+    <!-- Package the JAR file, Javascript, static resources
+    and external libraries into a WAR file
+    <target name="war" depends="gwt-compile, jar, copy-resources">
+ 
+        <war basedir="war" destfile="${dist.dir}/${war.name}" webxml="war/WEB-INF/web.xml">
+            <exclude name="WEB-INF/**" />
+            <exclude name="${server.resources.name}/**"/>
+            <webinf dir="war/WEB-INF/">
+                <include name="classes/${server.resources.name}/**" />
+                <include name="**/*.jar" />
+                <exclude name="**/gwt-dev.jar" />
+                <exclude name="**/gwt-user.jar" />
+            </webinf>
+        </war>
+    </target>  
+     -->
+</project>

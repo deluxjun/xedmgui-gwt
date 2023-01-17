@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 웹 환경과 관련 있는 모든 빈 등록 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:p="http://www.springframework.org/schema/p" 
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                       http://www.springframework.org/schema/beans/spring-beans.xsd
+	                       http://www.springframework.org/schema/context 
+	                       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	                       http://www.springframework.org/schema/mvc
+	                       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+	
+	<!-- 전용태그를 이용한 @MVC 사용시 필요한 여러 빈 자동 등록 -->
+	<mvc:annotation-driven/>
+	<!-- Annotation 사용을 위한 빈 스캐너 빈 등록 -->
+	<context:component-scan base-package="com.speno.xedm.web.controller"/>
+	
+	<!-- 모델이나 컨트롤러가 없이 단순 포워드 역할의 컨트롤러 빈 등록 -->
+	<!-- <mvc:view-controller path="/**/*" /> -->
+	<mvc:default-servlet-handler/>
+
+
+    <!-- ************  json view 설정  ***************** -->
+    <!-- UrlBasedViewResolver 대체 InternalResourceViewResolver 설정 -->
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="30"/>
+        <property name="contentType" value="text/html ; charset=utf-8" ></property>
+    </bean>
+    
+    <!-- json view 설정을 위한 bean name view resolver 설정 -->
+    <bean id="beanViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="20"></property>
+    </bean>
+    
+    <!-- json view 설정 -->
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+</beans>
