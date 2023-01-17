@@ -3,7 +3,7 @@
 ## EDM Web Client gwt(google web toolkit version)
 
 <h2 align="center">
-  <img src="https://github.com/deluxjun/xedmgui-gwt/edmgui-gwt-page1.png" alt="EDM Frontend" />
+  <img src="https://github.com/deluxjun/xedmgui-gwt/blob/main/edmgui-gwt-page1.png" alt="EDM Frontend" />
   <br>
 </h2>
 
