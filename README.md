@@ -9,11 +9,12 @@
 
 ## Features
 
-⚡️ Modern UI Design + Reveal Animations\
-⚡️ Made with GWT, SmartGWT\
 ⚡️ Enterprise documents management client\
-⚡️ Managing documents and images easily such as Explorer/Finder\
-⚡️ This includes user pages and admin pages
+⚡️ Made with GWT, SmartGWT\
+⚡️ Manage documents and images easily such as Explorer/Finder\
+⚡️ This includes user pages and admin pages\
+⚡️ Manage file/folder, create/upload/download/edit file\
+⚡️ Audit files and managing history and versions, properties\
 
 
 ## Authors
